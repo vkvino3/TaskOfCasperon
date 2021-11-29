@@ -1,4 +1,0 @@
-com/example/task/BuildConfig.java
- com.example.task.BuildConfig
-com/example/task/databinding/ActivityMainBinding.java
- com.example.task.databinding.ActivityMainBinding
