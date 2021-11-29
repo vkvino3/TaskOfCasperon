@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="PrimaryTextBold" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/colorPrimaryText</item>
+        <item name="android:textAppearance">@style/TextAppearanceBold</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="TextAppearanceBold" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:fontFamily">@font/font_bold</item>
+        <item name="font">@font/font_bold</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Theme.TabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabTextAppearance">@style/TextAppearanceBold</item>
+        <item name="tabSelectedTextColor">@color/colorPrimary</item>
+        <item name="tabTextColor">@color/colorPrimaryText</item>
+    </style>
+
+    <style name="PrimaryTextNormal" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/colorPrimaryText</item>
+        <item name="android:textAppearance">@style/TextAppearanceRegular</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="TextAppearanceRegular" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:fontFamily">@font/font_regular</item>
+        <item name="font">@font/font_regular</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="SecondaryTextNormal" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textColor">@color/colorSecondaryText</item>
+        <item name="android:textAppearance">@style/TextAppearanceRegular</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+</resources>
