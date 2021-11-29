@@ -168,7 +168,6 @@
             android:layout_marginTop="7sp"
             android:layout_gravity="center"
             android:text=""
-            android:textColor=""
             android:background="@drawable/square"/>
 
     </LinearLayout>

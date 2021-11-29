@@ -17,4 +17,7 @@
     <color name="colorWhiteTransparent">#E6FFFFFF</color>
     <color name="colorSecondaryText">#868686</color>
     <color name="green">#02877B</color>
+    <color name="start_color">#12575c</color>
+    <color name="end_color">#12836f</color>
+    <color name="center_color">#136d64</color>
 </resources>
