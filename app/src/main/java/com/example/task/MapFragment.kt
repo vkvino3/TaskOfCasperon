@@ -23,7 +23,6 @@ import androidx.fragment.app.Fragment
 import com.example.task.databinding.FragmentMyMapBinding
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.common.internal.Constants
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
@@ -31,6 +30,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
+import com.google.android.libraries.places.api.Places
 import timber.log.Timber
 
 class MapFragment(val activity: MainActivity) : Fragment(), OnMapReadyCallback,
@@ -77,6 +77,7 @@ class MapFragment(val activity: MainActivity) : Fragment(), OnMapReadyCallback,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Places.initialize(requireActivity(), getString(R.string.maps_api_key))
         initValues()
         initView()
 
@@ -85,20 +86,21 @@ class MapFragment(val activity: MainActivity) : Fragment(), OnMapReadyCallback,
     private fun initValues() {
         mContext = activity
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(mContext)
-        mSettingsClient = LocationServices.getSettingsClient(mContext);
-        locationManager = getActivity()?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        mSettingsClient = LocationServices.getSettingsClient(mContext)
+        locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
     }
 
     private fun initView() {
-        var mapFragment : SupportMapFragment?=null
-        mapFragment = fragmentManager?.findFragmentById(R.id.mapFragment) as SupportMapFragment?
+
+        val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
+        mapFragment.getMapAsync(this)
         /*mapFragment = requireActivity().supportFragmentManager
             .findFragmentById(R.id.mapFragment) as SupportMapFragment*/
-        mapFragment?.getMapAsync(this)
 
         createLocationCallback()
         createLocationRequest()
         buildLocationSettingsRequest()
+
     }
 
     private fun createLocationCallback() {
@@ -123,6 +125,28 @@ class MapFragment(val activity: MainActivity) : Fragment(), OnMapReadyCallback,
                 }
                 stopLocationUpdates()
             }
+        }
+    }
+
+    private fun setToCurrentLocation() {
+        val mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        try {
+            mFusedLocationClient.lastLocation
+                .addOnSuccessListener { location -> // GPS location can be null if GPS is switched off
+                    if (location != null) {
+                        val latlng = LatLng(
+                            location.latitude,
+                            location.longitude
+                        )
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 17f))
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.d("MapDemoActivity", "Error trying to get last GPS location")
+                    e.printStackTrace()
+                }
+        } catch (e: SecurityException) {
+            e.printStackTrace()
         }
     }
 

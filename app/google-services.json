@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "102740260520",
+    "firebase_url": "https://vinoth-f9f4e.firebaseio.com",
+    "project_id": "vinoth-f9f4e",
+    "storage_bucket": "vinoth-f9f4e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:102740260520:android:6ebb182fda2e35e5edf49d",
+        "android_client_info": {
+          "package_name": "com.example.task"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "102740260520-b6cdh0fbgm9hi4hffts91t213up9kt5k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.task",
+            "certificate_hash": "799bd952badf9204090044bbe3c20e12b05df31b"
+          }
+        },
+        {
+          "client_id": "102740260520-uv8u4jglsonp7p0108k7h16mi9ref6sm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3RPjJssvD9QIKIlN0icuC6PWvPEPzL9I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "102740260520-fdsn7b9kbjv0csu1o4n15g5115ghj1nu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -26,21 +26,5 @@
 
         </FrameLayout>
 
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnCurrentLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="20dp"
-            android:backgroundTint="@color/white"
-            android:onClick="onMyLocationClicked"
-            android:src="@drawable/gps"
-            android:visibility="gone"
-            app:backgroundTint="@color/white"
-            app:fabSize="auto"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
