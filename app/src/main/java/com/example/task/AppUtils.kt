@@ -2,52 +2,29 @@ package com.example.task
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.Dialog
 import android.content.Context
-import android.content.Intent
-import android.graphics.drawable.Drawable
-import android.net.Uri
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
+import android.os.Environment
 import android.os.Handler
-import android.provider.Settings
-import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
-import android.view.Window
-import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
-import org.json.JSONObject
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileInputStream
-import java.math.RoundingMode
-import java.text.DecimalFormat
-import java.text.NumberFormat
-import java.util.*
+import java.io.PrintWriter
 
-class AppUtils {
-
-    @SuppressLint("CommitPrefEdits")
-    constructor(context: Context) {
-        mContext = context
-    }
+class AppUtils @SuppressLint("CommitPrefEdits") constructor(private var context: Context) {
 
     companion object {
         private val TAG: String = AppUtils::class.java.simpleName
-        lateinit var mContext: Context
+        const val USER_TOKEN="eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiIsImNydCI6IjE2MzgxNzgzNzkifQ==.eyJ1c2VyX2lkIjoiNjE1MTdjZmQ0YjlkNjcyODk0MWU5MDg3IiwiYWNjZXNzIjoidXNlciIsImxpZmV0aW1lIjoiNDgifQ==.NDMzYzFiM2ZlNTdmNGNlMjEwMDgxNTBjNjY1M2Y1ZmQ3NzNkNmZiNzQ0NjliY2U2ODcwYTg5OTcwODc2NDFlNQ=="
         var snackbar: Snackbar? = null
 
 
-        public fun makeToast(message: String) {
-            Toast.makeText(mContext.applicationContext, message, Toast.LENGTH_SHORT).show()
+        public fun makeToast(context: Context,message: String) {
+            Toast.makeText(context.applicationContext, message, Toast.LENGTH_SHORT).show()
         }
 
         fun showNoInternetSnack(activity: Activity, parentLay: View, isConnected: Boolean) {
@@ -63,36 +40,74 @@ class AppUtils {
                     Snackbar.LENGTH_INDEFINITE
                 )
                 snackbar?.show()
+                Handler(activity.mainLooper).postDelayed(Runnable { dismiss() },2000)
             }
         }
 
-        fun showSoftKeyBoard(activity: Activity) {
-            val imm: InputMethodManager =
-                activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-            //Find the currently focused view, so we can grab the correct window token from it.
-            //Find the currently focused view, so we can grab the correct window token from it.
-            var view = activity.currentFocus
-            //If no view currently has focus, create a new one, just so we can grab a window token from it
-            //If no view currently has focus, create a new one, just so we can grab a window token from it
-            if (view == null) {
-                view = View(activity)
+        fun dismiss(){
+            if (snackbar != null) {
+                snackbar?.dismiss()
+                snackbar = null
             }
-            imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
 
-        fun hideSoftKeyBoard(activity: Activity) {
-            val imm: InputMethodManager =
-                activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-            //Find the currently focused view, so we can grab the correct window token from it.
-            //Find the currently focused view, so we can grab the correct window token from it.
-            var view = activity.currentFocus
-            //If no view currently has focus, create a new one, just so we can grab a window token from it
-            //If no view currently has focus, create a new one, just so we can grab a window token from it
-            if (view == null) {
-                view = View(activity)
+        fun isNetworkAvailable(context: Context?): Boolean {
+            if (context == null) return false
+            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+                if (capabilities != null) {
+                    when {
+                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                            return true
+                        }
+                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                            return true
+                        }
+                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
+                            return true
+                        }
+                    }
+                }
+            } else {
+                val activeNetworkInfo = connectivityManager.activeNetworkInfo
+                if (activeNetworkInfo != null && activeNetworkInfo.isConnected) {
+                    return true
+                }
             }
-            imm.hideSoftInputFromWindow(view.windowToken, 0)
+            return false
         }
+
+        fun downloadReceipt(historyItem: HistoryItem){
+            val file=File(Environment.getExternalStorageDirectory().absolutePath)
+            val fileNew=File(file,historyItem.rentalId+".txt")
+            if(fileNew.exists())
+                fileNew.delete()
+            Log.d(TAG, "downloadReceipt: "+fileNew.absolutePath)
+            fileNew.createNewFile()
+            val writer=PrintWriter(fileNew)
+            writer.append("ID :  "+historyItem.rentalId)
+            writer.append("\nVehicle Detail : \n")
+            writer.append("Info : "+historyItem.vehicle.info)
+            writer.append("\nLicense Plate : "+historyItem.vehicle.licensePlate)
+            writer.append("\nVehicle Color : "+historyItem.vehicle.vehicleColor)
+            writer.append("\nVin Number : "+historyItem.vehicle.vinNumber)
+            writer.append("\n\nStart From")
+            writer.append("\nStation Name : "+historyItem.startedStation)
+            writer.append("\nParking Lane  : "+historyItem.startedPakingLane)
+            writer.append("\nTime : "+historyItem.startedAt)
+            writer.append("\n\nEnded To")
+            writer.append("\nStation Name : "+historyItem.endedStation)
+            writer.append("\nParking Lane  : "+historyItem.endedParkingLane)
+            writer.append("\nTime : "+historyItem.endedAt)
+            writer.append("\n\nFare Details")
+            writer.append("\nTotal Time : "+historyItem.fareDetails.totalTime)
+            writer.append("\nTotal Cost : "+historyItem.fareDetails.totalCost)
+writer.close()
+
+        }
+
+
     }
 
 

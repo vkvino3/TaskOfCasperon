@@ -4,4 +4,6 @@
     <string name="map">Map</string>
     <string name="history">History</string>
     <string name="no_item_found">No item found</string>
+    <string name="download_receipt">Download Receipt</string>
+    <string name="total_time">Total Time</string>
 </resources>

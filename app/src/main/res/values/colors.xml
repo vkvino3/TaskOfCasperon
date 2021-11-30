@@ -20,4 +20,10 @@
     <color name="start_color">#12575c</color>
     <color name="end_color">#12836f</color>
     <color name="center_color">#136d64</color>
+
+    <color name="text_color_2">#84d1cc</color>
+    <color name="divider">#AEDEDB</color>
+    <color name="receipt">#f4f5f6</color>
+    <color name="button_text">#abdcd9</color>
+    <color name="red_icon">#da713f</color>
 </resources>

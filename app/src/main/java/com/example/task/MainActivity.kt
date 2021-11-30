@@ -1,8 +1,14 @@
 package com.example.task
 
+import android.Manifest.permission
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -14,10 +20,13 @@ import androidx.core.view.ViewCompat
 import androidx.appcompat.content.res.AppCompatResources
 
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.example.task.helper.OnItemClicked
 import com.google.android.material.tabs.TabLayout
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnItemClicked {
     companion object {
         val TAG = MainActivity::class.java.simpleName
     }
@@ -116,6 +125,49 @@ class MainActivity : AppCompatActivity() {
                MapFragment(this@MainActivity)
             } else {
                HistoryFragment(this@MainActivity)
+            }
+        }
+    }
+
+    override fun downloadReceipt(historyItem: HistoryItem) {
+        if (ContextCompat.checkSelfPermission(this, permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(permission.WRITE_EXTERNAL_STORAGE), 100)
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (Environment.isExternalStorageManager()) {
+                    AppUtils.downloadReceipt(historyItem)
+                } else {
+                    val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                    val uri: Uri = Uri.fromParts("package", packageName, null)
+                    intent.data = uri
+                    startActivity(intent)
+                }
+            } else {
+                AppUtils.downloadReceipt(historyItem)
+            }
+
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(requestCode==100){
+            var permissionGranted = true
+            for (permission in permissions) {
+                if (ActivityCompat.checkSelfPermission(applicationContext, permission) != PackageManager.PERMISSION_GRANTED) {
+                    permissionGranted = false
+                    break
+                }
+            }
+            if(permissionGranted){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    if (!Environment.isExternalStorageManager()) {
+                        val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                        val uri: Uri = Uri.fromParts("package", packageName, null)
+                        intent.data = uri
+                        startActivity(intent)
+                    }
+                }
             }
         }
     }
