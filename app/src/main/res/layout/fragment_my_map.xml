@@ -36,6 +36,7 @@
             android:backgroundTint="@color/white"
             android:onClick="onMyLocationClicked"
             android:src="@drawable/gps"
+            android:visibility="gone"
             app:backgroundTint="@color/white"
             app:fabSize="auto"
             app:layout_constraintBottom_toBottomOf="parent"

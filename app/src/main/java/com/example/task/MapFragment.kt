@@ -33,7 +33,8 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
 import timber.log.Timber
 
-class MapFragment(val activity: MainActivity) : Fragment(), OnMapReadyCallback {
+class MapFragment(val activity: MainActivity) : Fragment(), OnMapReadyCallback,
+    GoogleMap.OnMyLocationButtonClickListener {
 
     companion object {
         val TAG = MapFragment::class.java.simpleName
@@ -85,8 +86,7 @@ class MapFragment(val activity: MainActivity) : Fragment(), OnMapReadyCallback {
         mContext = activity
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(mContext)
         mSettingsClient = LocationServices.getSettingsClient(mContext);
-        locationManager =
-            getActivity()?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationManager = getActivity()?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     }
 
     private fun initView() {
@@ -107,7 +107,7 @@ class MapFragment(val activity: MainActivity) : Fragment(), OnMapReadyCallback {
                 super.onLocationResult(locationResult)
                 mCurrentLocation = locationResult.lastLocation
                 if (myLocationClicked) {
-                    myLocationClicked = false
+                    //myLocationClicked = false
                     try {
                         val cameraUpdate: CameraUpdate =
                             CameraUpdateFactory.newLatLngZoom(
@@ -270,6 +270,26 @@ class MapFragment(val activity: MainActivity) : Fragment(), OnMapReadyCallback {
         setUpMap()
         // Add a marker in Sydney and move the camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(center))
+        if (checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        mMap.isMyLocationEnabled=true
+        mMap.uiSettings.isMyLocationButtonEnabled=true
+        mMap.setOnMyLocationButtonClickListener(this)
     }
 
     private fun setUpMap() {
@@ -396,6 +416,10 @@ class MapFragment(val activity: MainActivity) : Fragment(), OnMapReadyCallback {
                 }
 
             })
+    }
+
+    override fun onMyLocationButtonClick(): Boolean {
+        return true
     }
 
 
